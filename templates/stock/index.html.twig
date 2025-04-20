@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Stocks{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>Gestion des Stocks</h1>
+
+    <div class="stock-grid">
+        {% for code, categorie in stocks %}
+        <div class="stock-category">
+            <h2>{{ categorie.nom }}</h2>
+            <table class="stock-table">
+                <thead>
+                    <tr>
+                        <th>Taille</th>
+                        <th>Quantité</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for taille in tailles %}
+                    <tr>
+                        <td>{{ taille }}</td>
+                        <td>{{ categorie.tailles[taille] }}</td>
+                        <td>
+                            <form action="{{ path('app_stock_ajuster', {
+                                'categorie': code,
+                                'taille': taille
+                            }) }}" method="POST" class="stock-form">
+                                <input type="number" name="quantite" 
+                                       value="{{ categorie.tailles[taille] }}" 
+                                       min="0" class="stock-input">
+                                <button type="submit" class="btn-update">Mettre à jour</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="stock-summary">
+        <h2>Résumé des stocks</h2>
+        <ul>
+            {% for code, categorie in stocks %}
+                <li>
+                    <strong>{{ categorie.nom }}:</strong>
+                    Total: {{ categorie.tailles|reduce((sum, qty) => sum + qty) }} pièces
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

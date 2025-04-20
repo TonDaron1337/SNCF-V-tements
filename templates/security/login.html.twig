@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="auth-container">
+    <div class="auth-header">
+        <img src="{{ asset('images/sncf-logo.png') }}" alt="SNCF Logo">
+        <h1>Connexion</h1>
+    </div>
+
+    {% if error %}
+        <div class="error-message">
+            {{ error.messageKey|trans(error.messageData, 'security') }}
+        </div>
+    {% endif %}
+
+    <form method="post">
+        <div class="form-group">
+            <label for="numero_cp">Numéro CP</label>
+            <input type="text" id="numero_cp" name="numero_cp" value="{{ last_username }}" 
+                   pattern="[0-9]{7}[A-Z]" required autofocus
+                   placeholder="1234567A">
+            <div class="help-text">Format: 7 chiffres suivis d'une lettre majuscule</div>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Mot de passe</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+        <button type="submit">Se connecter</button>
+    </form>
+
+    <div class="auth-footer">
+        <p>Pas encore de compte ? <a href="{{ path('app_register') }}">S'inscrire</a></p>
+    </div>
+</div>
+{% endblock %}
